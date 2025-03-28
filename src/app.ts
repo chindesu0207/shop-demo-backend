@@ -1,31 +1,24 @@
-import express, { Request, Response } from "express";
+import express from "express";
 import cors from "cors";
 import "dotenv/config";
-import { pool } from "./db";
+import helmet from "helmet";
+import router from "./routes";
+import corsOptions from "./config/corsOptions";
+import errorHandler from "./middlewares/error.middleware";
+import notFoundHandler from "./middlewares/notFound.middleware";
 
 const app = express();
-const port = process.env.PORT || 3000;
 
-app.use(cors());
+app.use(helmet());
+app.use(cors(corsOptions));
 app.use(express.json());
 
-app.use((req: Request, res: Response) => {
-  res.status(404).send(`<h1>404 - 找不到網頁</h1>`);
-});
+app.use("/api", router);
 
-async function startServer() {
-  try {
-    const client = await pool.connect();
-    await client.query("SELECT 1");
-    client.release();
-    console.log("資料庫連線成功");
-    app.listen(port, () => {
-      console.log(`Server is running on http://localhost:${port}`);
-    });
-  } catch (error) {
-    console.error("資料庫連線失敗：", error);
-    process.exit(1);
-  }
-}
+//攔截所有沒有對應到的路由
+app.use(notFoundHandler);
 
-startServer();
+//錯誤處理
+app.use(errorHandler);
+
+export default app;
