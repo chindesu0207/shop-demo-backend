@@ -6,6 +6,10 @@ import adminProductRouter from "./admin/product.route";
 
 const router = Router();
 
+router.options("/", (_req, res) => {
+  res.sendStatus(204);
+});
+
 router.use("/auth", authRouter);
 router.use("/products", productRouter);
 
