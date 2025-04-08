@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "dev": "nodemon",
-    "start": "ts-node src/server.ts",
+    "build": "tsc && npm run db:push",
+    "start": "node dist/server.js",
     "lint": "eslint .",
     "commit": "git-cz",
     "prepare": "husky",
