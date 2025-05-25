@@ -37,3 +37,21 @@ export const getProductDetail = handleErrorAsync(async (req: Request, res: Respo
     },
   });
 });
+
+export const getProduct = handleErrorAsync(async (req: Request, res: Response) => {
+  const { styleId } = req.params;
+
+  const inventory = await InventoryRepo.getById(styleId);
+  const product = await ProductRepo.getById(inventory.productId);
+
+  const filteredInventory = omitFields(inventory, ["productId"]);
+  const filteredProduct = omitFields(product, ["isActive", "createdAt", "updatedAt"]);
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      product: filteredProduct,
+      styles: filteredInventory,
+    },
+  });
+});

@@ -10,6 +10,10 @@ export const InventoryRepo = {
       .returning();
     return result[0];
   },
+  getById: async (id: string) => {
+    const result = await db.select().from(inventories).where(eq(inventories.id, id));
+    return result[0];
+  },
   getByProductId: async (id: string) => {
     const result = await db.select().from(inventories).where(eq(inventories.productId, id));
     return result;
